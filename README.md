@@ -2,19 +2,6 @@
 
 Минимальный MVP для генерации SEO-контента через Flowise Prediction API и NestJS endpoint со streaming-ответом.
 
-## Что внутри
-
-- `flowise/seo-generator-flow.json` - экспорт chatflow с prompt template, LLM chain и structured output schema.
-- `src/seo/seo.controller.ts` - `POST /api/generate-seo`.
-- `src/seo/seo.service.ts` - вызов Flowise API, таймаут, проверка пустого ответа и JSON.
-- `.env.example` - переменные среды.
-
-## Требования
-
-- Node.js 20+
-- Запущенный Flowise instance
-- Chatflow, импортированный из `flowise/seo-generator-flow.json`
-
 ## Запуск
 
 1. Установить зависимости:
@@ -109,12 +96,3 @@ curl -N -X POST http://localhost:3000/api/generate-seo \
   "message": "Flowise response timed out after 25000ms"
 }
 ```
-
-## Почему без чанкинга документов
-
-В этом кейсе чанкинг не использовался, потому что задача не про retrieval по документам, а про генерацию контента на основе коротких структурированных входных данных. Поэтому основной акцент сделан на prompt template, structured output и валидацию ответа модели.
-
-## Notes
-
-- Flowise streaming не используется напрямую; endpoint сначала получает валидный ответ, после чего отдает его клиенту чанками.
-- Если ваша версия Flowise использует другой формат Prediction API ответа, адаптация делается в `src/seo/seo.service.ts`.
