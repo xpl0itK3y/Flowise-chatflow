@@ -14,6 +14,30 @@ cp .env.example .env
 npm run start:dev
 ```
 
+Flowise можно поднять в Docker:
+
+```bash
+docker run -d --name flowise -p 3001:3000 flowiseai/flowise
+```
+
+После запуска:
+- открыть `http://localhost:3001`
+- импортировать `flowise/seo-generator-flow.json`
+- открыть chatflow в UI
+- взять `FLOWISE_CHATFLOW_ID` из URL
+
+Пример:
+
+```text
+http://localhost:3001/canvas/3b13e36a-18bb-4205-b4ed-1942a908803c
+```
+
+Значит:
+
+```dotenv
+FLOWISE_CHATFLOW_ID=3b13e36a-18bb-4205-b4ed-1942a908803c
+```
+
 `.env`:
 
 ```dotenv
