@@ -11,7 +11,10 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  await app.listen(3000);
+  app.enableShutdownHooks();
+
+  const port = Number(process.env.PORT ?? 3000);
+  await app.listen(port);
 }
 
 void bootstrap();
