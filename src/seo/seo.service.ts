@@ -110,6 +110,14 @@ export class SeoService {
   }
 
   private parseSeoContent(rawResponse: unknown): SeoContent {
+    if (rawResponse && typeof rawResponse === 'object') {
+      const directObject = this.extractDirectObject(rawResponse);
+
+      if (directObject) {
+        return this.validateSeoContent(directObject);
+      }
+    }
+
     const rawContent = this.extractContent(rawResponse);
 
     if (!rawContent) {
@@ -146,7 +154,7 @@ export class SeoService {
       const value = (rawResponse as Record<string, unknown>)[key];
 
       if (typeof value === 'string' && value.trim()) {
-        return value.trim();
+        return this.stripCodeFence(value.trim());
       }
 
       if (value && typeof value === 'object') {
@@ -155,6 +163,24 @@ export class SeoService {
     }
 
     return '';
+  }
+
+  private extractDirectObject(rawResponse: Record<string, unknown>): unknown {
+    const directCandidates = ['json', 'output', 'data'];
+
+    for (const key of directCandidates) {
+      const value = rawResponse[key];
+
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        return value;
+      }
+    }
+
+    return null;
+  }
+
+  private stripCodeFence(value: string): string {
+    return value.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/, '');
   }
 
   private validateSeoContent(value: unknown): SeoContent {
