@@ -4,6 +4,7 @@ import { FLOWISE_TIMEOUT_MS } from './seo.constants';
 import {
   FlowiseTimeoutError,
   FlowiseUnavailableError,
+  InvalidLlmJsonError,
 } from './seo.errors';
 
 interface FlowisePredictionRequest {
@@ -34,9 +35,21 @@ export class FlowiseClient {
         );
       }
 
-      return await response.json();
+      try {
+        return await response.json();
+      } catch (error) {
+        throw new InvalidLlmJsonError(
+          error instanceof Error
+            ? `Flowise returned invalid JSON: ${error.message}`
+            : 'Flowise returned invalid JSON',
+        );
+      }
     } catch (error) {
       if (error instanceof FlowiseUnavailableError) {
+        throw error;
+      }
+
+      if (error instanceof InvalidLlmJsonError) {
         throw error;
       }
 
