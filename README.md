@@ -31,6 +31,8 @@ FLOWISE_API_KEY=
 npm run start:dev
 ```
 
+`.env` загружается автоматически через `@nestjs/config`.
+
 ## Endpoint
 
 `POST /api/generate-seo`
