@@ -22,6 +22,7 @@ docker run -d --name flowise -p 3001:3000 flowiseai/flowise
 
 После запуска:
 - открыть `http://localhost:3001`
+- выбрать `Add New -> Import Chatflow`
 - импортировать `flowise/seo-generator-flow.json`
 - открыть chatflow в UI
 - взять `FLOWISE_CHATFLOW_ID` из URL
