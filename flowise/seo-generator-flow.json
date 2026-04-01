@@ -1,0 +1,128 @@
+{
+  "name": "SEO Generator MVP",
+  "description": "Flowise chatflow for generating structured SEO content from product data.",
+  "type": "CHATFLOW",
+  "nodes": [
+    {
+      "id": "prompt-template-1",
+      "type": "customNode",
+      "position": {
+        "x": 120,
+        "y": 180
+      },
+      "data": {
+        "label": "Prompt Template",
+        "name": "promptTemplate",
+        "category": "Prompts",
+        "inputs": {
+          "template": "You are an SEO copywriter for e-commerce.\nGenerate SEO content for the product below.\n\nproduct_name: {product_name}\ncategory: {category}\nkeywords: {keywords}\n\nReturn valid JSON only and match this schema exactly:\n{\n  \"title\": \"\",\n  \"meta_description\": \"\",\n  \"h1\": \"\",\n  \"description\": \"\",\n  \"bullets\": []\n}\n\nRules:\n- title: concise SEO title\n- meta_description: 140-160 chars\n- h1: clear product headline\n- description: 2 short paragraphs\n- bullets: array of 4-6 benefit-oriented bullet strings",
+          "inputVariables": [
+            "product_name",
+            "category",
+            "keywords"
+          ]
+        }
+      }
+    },
+    {
+      "id": "llm-1",
+      "type": "customNode",
+      "position": {
+        "x": 420,
+        "y": 180
+      },
+      "data": {
+        "label": "ChatOpenAI",
+        "name": "chatOpenAI",
+        "category": "Chat Models",
+        "inputs": {
+          "modelName": "gpt-4o-mini",
+          "temperature": "0.2",
+          "jsonStructuredOutput": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "SEO title for the product page"
+              },
+              "meta_description": {
+                "type": "string",
+                "description": "Meta description for the product page"
+              },
+              "h1": {
+                "type": "string",
+                "description": "Main H1 heading"
+              },
+              "description": {
+                "type": "string",
+                "description": "Detailed product description"
+              },
+              "bullets": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Short benefits list"
+              }
+            },
+            "required": [
+              "title",
+              "meta_description",
+              "h1",
+              "description",
+              "bullets"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "llm-chain-1",
+      "type": "customNode",
+      "position": {
+        "x": 710,
+        "y": 180
+      },
+      "data": {
+        "label": "LLM Chain",
+        "name": "llmChain",
+        "category": "Chains"
+      }
+    },
+    {
+      "id": "structured-parser-1",
+      "type": "customNode",
+      "position": {
+        "x": 1000,
+        "y": 180
+      },
+      "data": {
+        "label": "Structured Output Parser",
+        "name": "structuredOutputParser",
+        "category": "Output Parsers",
+        "inputs": {
+          "jsonSchema": "{\n  \"title\": \"string\",\n  \"meta_description\": \"string\",\n  \"h1\": \"string\",\n  \"description\": \"string\",\n  \"bullets\": [\"string\"]\n}"
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "prompt-template-1",
+      "target": "llm-chain-1"
+    },
+    {
+      "source": "llm-1",
+      "target": "llm-chain-1"
+    },
+    {
+      "source": "structured-parser-1",
+      "target": "llm-chain-1"
+    }
+  ],
+  "notes": [
+    "Import the flow into Flowise and bind your provider credentials in the LLM node.",
+    "Use the Prediction API chatflow ID from the imported flow in FLOWISE_CHATFLOW_ID.",
+    "If your Flowise version uses the LLM node JSON Structured Output instead of a standalone parser, keep the same schema and connect that node directly."
+  ]
+}
