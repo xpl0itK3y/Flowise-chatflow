@@ -9,9 +9,7 @@ import {
 interface FlowisePredictionRequest {
   question: string;
   overrideConfig: {
-    product_name: string;
-    category: string;
-    keywords: string;
+    sessionId?: string;
   };
 }
 
@@ -84,21 +82,35 @@ export class FlowiseClient {
     return {
       question: this.buildPrompt(dto),
       overrideConfig: {
-        product_name: dto.product_name,
-        category: dto.category,
-        keywords: dto.keywords.join(', '),
+        ...(dto.session_id ? { sessionId: dto.session_id } : {}),
       },
     };
   }
 
   private buildPrompt(dto: GenerateSeoDto): string {
     return [
-      'Generate SEO content for the product using the provided variables.',
+      'You are an SEO copywriter for e-commerce.',
+      '',
+      'Generate SEO content for the product below.',
       `product_name: ${dto.product_name}`,
       `category: ${dto.category}`,
       `keywords: ${dto.keywords.join(', ')}`,
+      '',
       'Return valid JSON only.',
+      '',
+      'Required fields:',
+      '- title',
+      '- meta_description',
+      '- h1',
+      '- description',
+      '- bullets',
+      '',
+      'Rules:',
+      '- title: concise SEO title',
+      '- meta_description: 140-160 chars',
+      '- h1: clear product headline',
+      '- description: 2 short paragraphs',
+      '- bullets: array of 4-6 benefit-oriented bullet strings',
     ].join('\n');
   }
 }
-

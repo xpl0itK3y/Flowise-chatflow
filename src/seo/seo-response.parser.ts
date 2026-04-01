@@ -8,7 +8,9 @@ import {
 export class SeoResponseParser {
   parse(rawResponse: unknown): unknown {
     if (rawResponse && typeof rawResponse === 'object') {
-      const directObject = this.extractDirectObject(rawResponse);
+      const directObject = this.extractDirectObject(
+        rawResponse as Record<string, unknown>,
+      );
 
       if (directObject) {
         return directObject;
@@ -79,4 +81,3 @@ export class SeoResponseParser {
       .replace(/\s*```$/, '');
   }
 }
-
