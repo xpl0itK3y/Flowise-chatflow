@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
+import { SeoModule } from './seo/seo.module';
 
-@Module({})
+@Module({
+  imports: [SeoModule],
+})
 export class AppModule {}
-
